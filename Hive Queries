@@ -1,0 +1,43 @@
+CREATE TABLE Chicago_Crimes(id string, caseno string, datee string, block string, iucr string, primarytype string, description string, locationdescription string, arrest string, domestic string, beat string, district string, ward string, communityarea string, fbicode string, XCoordinate string, YCoordinate string, year string, updatedon string, latitude string, longitude string)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+STORED AS TEXTFILE LOCATION 'wasb://chicagocrimes@chicagocrimes.blob.core.windows.net/chicagocrimes/';
+
+
+
+Create Table CrimeLocation(block string, primarytype string, description string, latitude string, longitude string);
+INSERT OVERWRITE TABLE CrimeLocation
+Select block, primarytype, description, latitude, longitude from Chicago_Crimes;
+
+
+
+Create Table CrimeCount(primarytype string, crimecount string);
+INSERT OVERWRITE TABLE CrimeCount
+Select primarytype, Count (primarytype) from Chicago_Crimes Group by primarytype ;
+
+
+
+Drop Table If Exists NightCrimeat8PM;
+Create Table NightCrimeat8PM(datee String, block string, description string, locationdescription string, latitude string, longitude string);
+INSERT OVERWRITE TABLE NightCrimeat8PM
+Select datee, block, description, locationdescription, latitude, longitude from Chicago_Crimes where datee LIKE '%2015 08:%:%PM';
+
+
+
+Drop Table If Exists NightCrimeat9PM;
+Create Table NightCrimeat9PM(datee String, block string, description string, locationdescription string, latitude string, longitude string);
+INSERT OVERWRITE TABLE NightCrimeat9PM
+Select datee, block, description, locationdescription, latitude, longitude from Chicago_Crimes where datee LIKE '%2015 09:%:%PM';
+
+
+
+Drop Table If Exists NightCrimeat10PM;
+Create Table NightCrimeat10PM(datee String, block string, description string, locationdescription string, latitude string, longitude string);
+INSERT OVERWRITE TABLE NightCrimeat10PM
+Select datee, block, description, locationdescription, latitude, longitude from Chicago_Crimes where datee LIKE '%2015 10:%:%PM';
+
+
+
+Drop Table If Exists NightCrimeat11PM;
+Create Table NightCrimeat11PM(datee String, block string, description string, locationdescription string, latitude string, longitude string);
+INSERT OVERWRITE TABLE NightCrimeat11PM
+Select datee, block, description, locationdescription, latitude, longitude from Chicago_Crimes where datee LIKE '%2015 11:%:%PM';
